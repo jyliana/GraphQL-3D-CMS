@@ -1,0 +1,24 @@
+type Model {
+    id: ID!
+    name: String!
+    material: Material!
+    type: Type!
+    description: String
+    settings: String
+}
+
+enum Material{
+    PLASTIC, POWDERS, RESINS, METAL, CARBON_FIBER
+}
+
+enum Type{
+    PLANE, ARTILLERY, DRONE
+}
+
+input ModelCreateInput{
+    name: String!
+    material: Material!
+    type: Type!
+    description: String
+    settings: String
+}

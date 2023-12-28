@@ -1,0 +1,22 @@
+type Execution{
+    id:ID!
+    workerId: ID!
+    orderId:ID!
+    modelId:ID!
+    startDateTime: DateTime!
+    total: Int!
+    completed: Int!
+    status: ExecutionStatus
+    progress: Int!
+}
+
+enum ExecutionStatus{
+    COMPLETED, IN_PROGRESS, NOT_STARTED
+}
+
+input ExecutionUpdateInput{
+    executionId:ID!
+    orderId:ID!
+    modelId:ID!
+    completed:Int!
+}

@@ -1,0 +1,44 @@
+type User @connection {
+    id             : ID!
+    username       : String!
+    email          : String!
+    createDateTime : DateTime!
+    displayName    : String
+    category       : UserCategory!
+    orders         : [Order!]
+}
+
+enum UserCategory{
+    CUSTOMER, WORKER, ADMIN
+}
+
+input UserCreateInput{
+    username       : String! @NotBlank @Pattern(regexp: "^[A-Za-z]{2,50}$")
+    email          : String! @Pattern(regexp: "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")
+    password       : String! @Size(min: 8, max: 30)
+    category       : UserCategory!
+    displayName    : String
+}
+
+type UserResponse{
+    user           : User
+    authToken      : UserAuthToken
+}
+
+type UserAuthToken{
+    authToken      : String
+    expiryTime     : DateTime
+}
+
+input UserLoginInput{
+    email          : String!  @NotBlank @Pattern(regexp: "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")
+    password       : String!  @Size(min: 8, max: 30)
+}
+
+type UserPagination{
+    userConnection : UserConnection
+    page           : Int!
+    size           : Int!
+    totalPage      : Int!
+    totalElement   : Long!
+}

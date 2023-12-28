@@ -1,0 +1,44 @@
+type Order {
+    id: ID!
+    userId:ID!
+    tradeDateTime: DateTime!
+    dueDateTime: DateTime!
+    status: OrderStatus
+    deliveryAddress: String
+    orderDetails: [OrderDetail!]
+}
+
+enum OrderStatus{
+    CREATED, PROCESSING, COMPLETED, OVERDUE, CANCELED
+}
+
+input OrderCreateInput{
+    userId:ID!
+    dueDate: DateTime!
+    deliveryAddress: String!
+    details: [OrderDetailInput!]!
+}
+
+input OrderDetailInput{
+    id: ID!
+    amount: Int
+}
+type OrderDetail{
+    id:ID!
+    orderId:ID!
+    modelId:ID!
+    totalAmount: Int!
+    availableAmount: Int!
+    status: OrderDetailStatus!
+    progress: Int!
+}
+
+input DetailInWorkInput {
+    orderId:ID!
+    modelId:ID!
+    totalAmount:Int!
+}
+
+enum OrderDetailStatus{
+    FULLY_TAKEN, PARTIALLY_TAKEN, NOT_TAKEN, COMPLETED
+}

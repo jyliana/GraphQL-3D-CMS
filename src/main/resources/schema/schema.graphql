@@ -1,0 +1,28 @@
+type Query{
+    """Get all users with their orders"""
+    users                            : [User]
+    """Get required user"""
+    user(username      : String!)    : User
+    me                               : User!
+    models                           : [Model]
+    ordersByUser(email : String!)    : [Order]
+    """Get all <strong>available</strong> details"""
+    availableOrderDetails          : [OrderDetail]
+    usersPagination(
+        page       : Int
+        size       : Int
+    ) : UserPagination
+}
+
+type Mutation{
+    userCreate(          user      : UserCreateInput!)      : UserResponse!
+    userLogin(           user      : UserLoginInput!)       : UserResponse!
+    modelCreate(         model     : ModelCreateInput!)     : Model!
+    orderCreate(         order     : OrderCreateInput)      : Order!
+    takeDetailsInWork(   detail    : DetailInWorkInput)     : Execution
+    updateDetailsInWork( execution : ExecutionUpdateInput)  : Execution
+}
+
+type Subscription{
+    orderCreated: Order!
+}
