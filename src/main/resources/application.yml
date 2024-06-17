@@ -7,14 +7,14 @@ spring:
     banner-mode: OFF
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/3d_cms?currentSchema=3d_cms
-    username: test
-    password: test
+    url: jdbc:postgresql://localhost:5432/3d-cms
+    username: postgres
+    password: root
   jpa:
     hibernate:
       ddl-auto: none
     show-sql: false
-
+    open-in-view: false
 
 dgs:
   graphql:
