@@ -19,8 +19,8 @@ import static com.example.graphql.utils.GraphqlBeanMapper.mapToGraphql;
 @AllArgsConstructor
 public class OrderDataResolver {
 
-  private OrderService orderService;
-  private UserService userService;
+  private final OrderService orderService;
+  private final UserService userService;
 
   @DgsMutation(field = DgsConstants.MUTATION.OrderCreate)
   public Order createOrder(@InputArgument(name = "order") OrderCreateInput input) {

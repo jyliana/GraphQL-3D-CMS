@@ -16,8 +16,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ExecutionService {
 
-  private ExecutionRepository executionRepository;
-  private OrderDetailsRepository orderDetailsRepository;
+  private final ExecutionRepository executionRepository;
+  private final OrderDetailsRepository orderDetailsRepository;
 
   public ExecutionDto createExecutionForDetail(ExecutionDto detail) {
     return executionRepository.save(detail);

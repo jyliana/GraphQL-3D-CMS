@@ -19,8 +19,8 @@ import java.util.List;
 @AllArgsConstructor
 public class UserDataResolver {
 
-  private UserService userService;
   private final GraphqlBeanMapper mapper;
+  private final UserService userService;
 
   @DgsQuery(field = DgsConstants.QUERY.Me)
   public User accountInfo(@RequestHeader(name = "authToken") String authToken) {

@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ModelService {
 
-  private ModelRepository repository;
+  private final ModelRepository repository;
 
   public ModelDto createDetail(ModelDto detail) {
     return repository.save(detail);

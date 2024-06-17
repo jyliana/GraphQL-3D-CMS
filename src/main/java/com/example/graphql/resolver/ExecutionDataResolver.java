@@ -20,9 +20,9 @@ import static com.example.graphql.utils.GraphqlBeanMapper.*;
 @AllArgsConstructor
 public class ExecutionDataResolver {
 
-  private UserService userService;
-  private ExecutionService executionService;
-  private OrderService orderService;
+  private final UserService userService;
+  private final ExecutionService executionService;
+  private final OrderService orderService;
 
   @DgsMutation
   public Execution takeDetailsInWork(@RequestHeader(name = "authToken") String authToken, @InputArgument(name = "detail") DetailInWorkInput input) {

@@ -17,8 +17,8 @@ import java.util.List;
 @AllArgsConstructor
 public class ModelDataResolver {
 
-  private ModelService modelService;
-  private GraphqlBeanMapper mapper;
+  private final GraphqlBeanMapper mapper;
+  private final ModelService modelService;
 
   @DgsMutation(field = DgsConstants.MUTATION.ModelCreate)
   public Model createDetail(@InputArgument(name = "model") ModelCreateInput input) {

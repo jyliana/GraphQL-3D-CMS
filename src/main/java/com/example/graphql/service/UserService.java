@@ -23,8 +23,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserService {
 
-  private UserRepository userRepository;
-  private UserTokenRepository userTokenRepository;
+  private final UserRepository userRepository;
+  private final UserTokenRepository userTokenRepository;
 
   public List<UserDto> getAllUsers() {
     return userRepository.findAllByOrderByCreationTimestampDesc();

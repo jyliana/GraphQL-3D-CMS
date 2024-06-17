@@ -4,12 +4,14 @@ import com.example.graphql.datasource.dto.*;
 import com.example.graphql.types.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
 
 import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.UUID;
 
 @Mapper(config = DataMappingConfig.class)
+@Component
 public abstract class GraphqlBeanMapper {
 
   protected static final ZoneOffset ZONE_OFFSET = ZoneOffset.ofHours(2);
