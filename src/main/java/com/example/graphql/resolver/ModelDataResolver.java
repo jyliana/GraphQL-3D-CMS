@@ -13,25 +13,23 @@ import lombok.AllArgsConstructor;
 
 import java.util.List;
 
-import static com.example.graphql.utils.GraphqlBeanMapper.mapToEntity;
-import static com.example.graphql.utils.GraphqlBeanMapper.mapToGraphql;
-
 @DgsComponent
 @AllArgsConstructor
 public class ModelDataResolver {
 
   private ModelService modelService;
+  private GraphqlBeanMapper mapper;
 
   @DgsMutation(field = DgsConstants.MUTATION.ModelCreate)
   public Model createDetail(@InputArgument(name = "model") ModelCreateInput input) {
-    var model = mapToEntity(input);
+    var model = mapper.mapToEntity(input);
     var saved = modelService.createDetail(model);
-    return mapToGraphql(saved);
+    return mapper.mapToGraphql(saved);
   }
 
   @DgsQuery(field = DgsConstants.QUERY.Models)
   public List<Model> getAllModels() {
-    return modelService.getAllModels().stream().map(GraphqlBeanMapper::mapToGraphql).toList();
+    return modelService.getAllModels().stream().map(mapper::mapToGraphql).toList();
   }
 
 }

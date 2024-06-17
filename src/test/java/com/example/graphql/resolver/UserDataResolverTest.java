@@ -5,12 +5,13 @@ import com.example.graphql.datasource.dto.UserDto;
 import com.example.graphql.datasource.repository.UserRepository;
 import com.example.graphql.types.User;
 import com.example.graphql.types.UserCategory;
+import com.example.graphql.types.UserResponse;
 import com.jayway.jsonpath.TypeRef;
 import com.netflix.graphql.dgs.DgsQueryExecutor;
 import com.netflix.graphql.dgs.exceptions.DgsEntityNotFoundException;
 import lombok.SneakyThrows;
 import org.intellij.lang.annotations.Language;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +29,8 @@ class UserDataResolverTest extends BaseConfigurationTest {
   @Autowired
   private UserRepository userRepository;
 
-  @BeforeEach
-  public void setup() {
+  @AfterEach
+  public void cleanUp() {
     userRepository.deleteAll();
   }
 
@@ -192,5 +193,60 @@ class UserDataResolverTest extends BaseConfigurationTest {
       assertThat(list.get(1).getUsername()).contains("test");
     });
   }
+
+  @Test
+  @SneakyThrows
+  @Transactional
+  void testGetUserLogin() {
+    // given
+    UserDto userDto = UserDto.builder()
+            .username("test")
+            .email("test@email.com")
+            .category(UserCategory.CUSTOMER)
+            .displayName("Test")
+            .hashedPassword("$2y$05$07xsx.a7e7LAcdu8gfHRqu/7k/osmgI2igVXt7MsndBQ0wGMpxpJ2")
+            .build();
+
+    userRepository.save(userDto);
+
+    @Language("GraphQL") var query = """
+            mutation userLogin{
+                  userLogin(user: { email: "test@email.com", password: "password" }) {
+                    user {
+                      id
+                      username
+                      email
+                      createDateTime
+                      displayName
+                      category
+                    }
+                    authToken {
+                      authToken
+                      expiryTime
+                    }
+                  }
+                }
+            """;
+
+    // when
+    var response = executor.executeAndExtractJsonPathAsObject(query, "data.userLogin", UserResponse.class);
+    var user = response.getUser();
+    var token = response.getAuthToken();
+
+    // then
+    assertSoftly((all) -> {
+      assertNotNull(user);
+      assertNotNull(token);
+      assertNotNull(token.getAuthToken());
+      assertNotNull(token.getExpiryTime());
+      assertNotNull(user.getId());
+      assertEquals(user.getUsername(), "test");
+      assertEquals(user.getEmail(), "test@email.com");
+      assertEquals(user.getDisplayName(), "Test");
+      assertEquals(user.getCategory(), UserCategory.CUSTOMER);
+      assertNotNull(user.getCreateDateTime());
+    });
+  }
+
 
 }

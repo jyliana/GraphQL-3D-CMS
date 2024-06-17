@@ -2,52 +2,29 @@ package com.example.graphql.utils;
 
 import com.example.graphql.datasource.dto.*;
 import com.example.graphql.types.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.UUID;
 
-import static com.example.graphql.utils.HashUtil.hashBcrypt;
+@Mapper(config = DataMappingConfig.class)
+public abstract class GraphqlBeanMapper {
 
+  protected static final ZoneOffset ZONE_OFFSET = ZoneOffset.ofHours(2);
 
-public class GraphqlBeanMapper {
+  @Mapping(target = "expiryTime", expression = "java(dto.getExpiryTimestamp().atOffset(ZONE_OFFSET))")
+  public abstract UserAuthToken mapToGraphql(UserTokenDto dto);
 
-  private static final ZoneOffset ZONE_OFFSET = ZoneOffset.ofHours(2);
+  @Mapping(target = "createDateTime", expression = "java(dto.getCreationTimestamp().atOffset(ZONE_OFFSET))")
+  @Mapping(target = "orders", expression = """
+          java(dto.getOrders() == null ?
+          java.util.Collections.emptyList()
+          : dto.getOrders().stream().map(GraphqlBeanMapper::mapToGraphql).toList())""")
+  public abstract User mapToGraphql(UserDto dto);
 
-  private GraphqlBeanMapper() {
-  }
-
-  public static User mapToGraphql(UserDto dto) {
-    return User.newBuilder()
-            .id(dto.getId().toString())
-            .displayName(dto.getDisplayName())
-            .email(dto.getEmail())
-            .username(dto.getUsername())
-            .category(dto.getCategory())
-            .createDateTime(dto.getCreationTimestamp().atOffset(ZONE_OFFSET))
-            .orders(dto.getOrders() == null ?
-                    Collections.emptyList()
-                    : dto.getOrders().stream().map(GraphqlBeanMapper::mapToGraphql).toList())
-            .build();
-  }
-
-  public static UserAuthToken mapToGraphql(UserTokenDto dto) {
-    return UserAuthToken.newBuilder()
-            .authToken(dto.getAuthToken())
-            .expiryTime(dto.getExpiryTimestamp().atOffset(ZONE_OFFSET))
-            .build();
-  }
-
-  public static Model mapToGraphql(ModelDto dto) {
-    return Model.newBuilder()
-            .id(dto.getId().toString())
-            .name(dto.getName())
-            .description(dto.getDescription())
-            .material(dto.getMaterial())
-            .settings(dto.getSettings())
-            .type(dto.getType())
-            .build();
-  }
+  public abstract Model mapToGraphql(ModelDto dto);
 
   public static OrderDetail mapToGraphql(OrderDetailDto dto) {
     return OrderDetail.newBuilder()
@@ -89,15 +66,8 @@ public class GraphqlBeanMapper {
             .build();
   }
 
-  public static UserDto mapToEntity(UserCreateInput input) {
-    return UserDto.builder()
-            .hashedPassword(hashBcrypt(input.getPassword()))
-            .username(input.getUsername())
-            .email(input.getEmail())
-            .category(input.getCategory())
-            .displayName(input.getDisplayName())
-            .build();
-  }
+  @Mapping(target = "hashedPassword", expression = "java(com.example.graphql.utils.HashUtil.hashBcrypt(input.getPassword()))")
+  public abstract UserDto mapToEntity(UserCreateInput input);
 
   public static OrderDetailDto mapToEntity(OrderDto order, String modelId, Integer amount) {
     return OrderDetailDto.builder()
@@ -119,15 +89,7 @@ public class GraphqlBeanMapper {
             .build();
   }
 
-  public static ModelDto mapToEntity(ModelCreateInput input) {
-    return ModelDto.builder()
-            .name(input.getName())
-            .description(input.getDescription())
-            .type(input.getType())
-            .material(input.getMaterial())
-            .settings(input.getSettings())
-            .build();
-  }
+  public abstract ModelDto mapToEntity(ModelCreateInput input);
 
   public static ExecutionDto mapToEntity(UUID id, String orderId, String modelId, Integer totalAmount, UUID userId) {
     return ExecutionDto.builder()
