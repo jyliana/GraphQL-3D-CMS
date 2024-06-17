@@ -8,8 +8,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/3d-cms
-    username: postgres
-    password: root
+    username: test
+    password: test
   jpa:
     hibernate:
       ddl-auto: none
